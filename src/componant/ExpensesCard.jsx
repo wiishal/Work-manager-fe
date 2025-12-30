@@ -10,7 +10,6 @@ function ExpensesCard({ item, id }) {
 
   async function getAIresult() {
     let arrofexpenses = promptForAI();
-    console.log(arrofexpenses);
     const genAI = new GoogleGenerativeAI(apiUrl);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     const prompt = `${arrofexpenses}. calculate total spending give responce in json   `;

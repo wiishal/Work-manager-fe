@@ -5,7 +5,7 @@ function AddSpendCard({ fetchSpends }) {
     axios
       .post("http://localhost:3001/api/expenses/addExpenses", {
         id: Math.random(),
-        date: "17-8-24",
+        date: new Date().toLocaleDateString,
         expenses_user: [""],
       })
       .then((res) => {

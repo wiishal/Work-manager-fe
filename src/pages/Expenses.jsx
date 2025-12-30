@@ -15,6 +15,7 @@ function Expenses() {
     useEffect(() => {
    fetchSpends();
   }, []);
+  
   const [cards, setCards] = useState([]);
   
   

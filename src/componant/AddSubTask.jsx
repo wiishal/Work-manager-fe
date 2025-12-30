@@ -1,12 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
-function AddSubTask({  Task, editTaskDiv,fetchTasks }) {
+
+function AddSubTask({ Task, editTaskDiv, fetchTasks }) {
   const [subtaskInput, setSubTaskInput] = useState();
 
   function subTaskInputHandler(e) {
     setSubTaskInput(e.target.value);
   }
-
 
   function checkSubTask(id, i) {
     axios
@@ -19,17 +19,17 @@ function AddSubTask({  Task, editTaskDiv,fetchTasks }) {
         fetchTasks();
       });
   }
-  function deleteSubTask(subTask,subTaskindex){
+  function deleteSubTask(subTask, subTaskindex) {
     console.log(subTaskindex, " from subtask", subTask);
-     axios
-       .post("http://localhost:3000/api/deleteSubTask", {
-         id: subTask,
-         index:subTaskindex
-       })
-       .then((res) => {
-         console.log(res.data);
-         fetchTasks();
-       });
+    axios
+      .post("http://localhost:3000/api/deleteSubTask", {
+        id: subTask,
+        index: subTaskindex,
+      })
+      .then((res) => {
+        console.log(res.data);
+        fetchTasks();
+      });
   }
 
   function addSubTask(id) {

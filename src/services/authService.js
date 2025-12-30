@@ -1,10 +1,11 @@
 const url = import.meta.env.VITE_API_URL;
 import axios from "axios";
-
+console.log(url);
 export async function login(userDetails) {
-
   try {
-    const response = await axios.post(`${url}/api/v1/auth/login`, userDetails);
+    const response = await axios.post(`${url}/api/v1/auth/login`, userDetails, {
+      withCredentials: true,
+    });
     if (response) {
       return response;
     }
