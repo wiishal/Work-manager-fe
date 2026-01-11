@@ -1,13 +1,46 @@
 import { useEffect, useState } from "react";
 import { getSubTasks } from "../services/subtaskService";
 import ShowError from "./ShowError";
-import { addSubTask } from "../services/subtaskService";
+import { addSubTask, subTaskAssistance } from "../services/subtaskService";
+import { checkBoxEmpty, checkBoxChecked,deletePng } from "../assets/assets";
+
 function AddSubTask({ Task }) {
+
+  
   const [subtaskInput, setSubTaskInput] = useState("");
   const [processing, setProcessing] = useState(false);
   const [subTasks, setSubTasks] = useState([]);
   const [error, setError] = useState(null);
-  function subTaskInputHandler(e) {}
+  const [isbtnDisable, setIsBtnDisable] = useState(false);
+  const [subTaskSuggestions, setSubTaskSuggestions] = useState([]);
+
+
+
+  const getAssistanceSubTask = async () => {
+
+    setIsBtnDisable(true);
+
+    const taskDetails = {
+      title: Task.title,
+      description: Task.taskDescription,
+    };
+
+
+    console.log("assistance for task :", taskDetails);
+    try {
+      const data = await subTaskAssistance(taskDetails);
+      setSubTaskSuggestions(data);
+      console.log(data, ": suggestions");
+    } catch (error) {
+      setError("error while assistance! ");
+      console.log(error);
+    } finally {
+      setIsBtnDisable(false);
+    }
+  };
+
+
+
   const fetchSubtask = async () => {
     setProcessing(true);
     try {
@@ -22,6 +55,7 @@ function AddSubTask({ Task }) {
     }
   };
 
+
   const addSubTaskFunc = async () => {
     if (subtaskInput == "") {
       setError("Empty input");
@@ -29,40 +63,61 @@ function AddSubTask({ Task }) {
     }
     try {
       const res = await addSubTask(subtaskInput, Task.id);
-      setSubTasks(res.data.subtask);
+      setSubTasks((prev) => [...prev, res.subtask]);
     } catch (error) {
       setError("something went Wrong!");
     } finally {
+      setSubTaskInput("");
     }
   };
+
+
+
+
   useEffect(() => {
     fetchSubtask();
   }, []);
+
+
+
   return (
     <div className="addsubTask">
       <h3>Sub Task</h3>
       {error && <ShowError error={error} closeErrorPopUp={setError} />}
-
-      <input
-      className="baseInputClass"
-        type="text"
-        value={subtaskInput}
-        onChange={(e) => setSubTaskInput(e.target.value)}
-        name=""
-        id=""
-      />
-      <button className="baseBtnClass" onClick={() => addSubTaskFunc()}>
-        Add
-      </button>
+      <div>
+        <input
+          className="baseInputClass"
+          type="text"
+          value={subtaskInput}
+          onChange={(e) => setSubTaskInput(e.target.value)}
+          name=""
+          id=""
+        />
+        <button className="baseBtnClass" onClick={() => addSubTaskFunc()}>
+          Add
+        </button>
+        <button
+          className="baseBtnClass"
+          onClick={() => {
+            if (!isbtnDisable) {
+              getAssistanceSubTask();
+            }
+          }}
+        >
+          Assist
+        </button>
+        {isbtnDisable && <div className="spinner"></div>}
+      </div>
       {processing && <div className="spinner" />}
 
       {subTasks.length > 0 &&
+        
         subTasks.map((task, i) => (
           <div className="subtaskRender">
             {!task.complete ? (
               <img
                 onClick={() => checkSubTask(Task.taskId, i)}
-                src="https://res.cloudinary.com/ddg85vpnk/image/upload/v1739965626/check-box-empty_a4aomp.png"
+                src={checkBoxEmpty}
                 alt=""
                 width={14}
                 height={14}
@@ -70,7 +125,7 @@ function AddSubTask({ Task }) {
             ) : (
               <img
                 onClick={() => checkSubTask(Task.taskId, i)}
-                src="https://res.cloudinary.com/ddg85vpnk/image/upload/v1739965624/check-box-with-check-sign_iqn92n.png"
+                src={checkBoxChecked}
                 alt=""
                 width={14}
                 height={14}
@@ -82,13 +137,15 @@ function AddSubTask({ Task }) {
               onClick={() => {
                 deleteSubTask(Task.taskId, i);
               }}
-              src="https://res.cloudinary.com/ddg85vpnk/image/upload/v1739965624/delete_xp9grm.png"
+              src={deletePng}
               alt=""
               width={10}
               height={10}
             />
           </div>
         ))}
+      {subTaskSuggestions.length > 0 &&
+        subTaskSuggestions.map((item) => <div>{item.title}</div>)}
     </div>
   );
 }

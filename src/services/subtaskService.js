@@ -1,27 +1,6 @@
 import axiosInstance from "../lib/axiosInstance";
 const url = import.meta.env.VITE_API_URL;
 
-async function checkSubTask(id, i) {
-  try {
-    const res = axios.post("http://localhost:3000/api/toggleSubtask", {
-      id: id,
-      index: i,
-    });
-  } catch (error) {
-    return false;
-  }
-}
-function deleteSubTask(subTask, subTaskindex) {
-  axios
-    .post("http://localhost:3000/api/deleteSubTask", {
-      id: subTask,
-      index: subTaskindex,
-    })
-    .then((res) => {
-      console.log(res.data);
-    });
-}
-
 export async function getSubTasks(taskId) {
   const res = await axiosInstance.post(`${url}/subtask`, { taskId });
 
@@ -35,4 +14,11 @@ export async function addSubTask(detail, taskId) {
   });
 
   return res.data;
+}
+
+export async function subTaskAssistance(taskDetails) {
+  const res = await axiosInstance.post(`${url}/subtask/assistance`, {
+    taskDetails,
+  });
+  return res.data.subtasks;
 }
