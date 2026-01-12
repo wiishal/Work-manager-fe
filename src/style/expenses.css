@@ -192,6 +192,9 @@
   border: solid 1px grey;
   padding: 1rem;
   border-radius: 0.3rem;
+  background-color: rgba(246, 245, 245, 0.752);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+
 }
 /* ===== TOTAL ===== */
 
@@ -256,8 +259,18 @@
     transform: rotate(360deg);
   }
 }
-.expenses-TitleBtn{
+
+.expense-totalexpenseResultDiv {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: grey;
+}
+
+.expense-calculateSpendDiv {
+  display: flex;
+}
+.expenses-TitleBtn {
   padding: 1rem;
-  border:solid 1px #222;
-  border-color:black transparent;
+  border: solid 1px #222;
+  border-color: black transparent;
 }

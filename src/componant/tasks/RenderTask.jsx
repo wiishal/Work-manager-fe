@@ -13,7 +13,6 @@ export default function RenderTask({
 }) {
   const [Task, setTask] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
   useEffect(() => {
     fetchTasks();
   }, [render]);
@@ -31,6 +30,7 @@ export default function RenderTask({
   };
 
   async function deletetask(id) {
+    console.log(id,"delete task req")
     if (!id) return false;
     const res = await deleteTask(id);
     if (!res) {
@@ -41,6 +41,7 @@ export default function RenderTask({
     setRender((prev) => !prev);
   }
   function handleEditTask(Id) {
+    seteditTaskDiv(null)
     seteditTaskDiv(Id);
     if (addTask) {
       setAddTask(false);
@@ -50,7 +51,6 @@ export default function RenderTask({
   if (isLoading) return <div className="spinner" />;
   return (
     <>
-      <h4 className="render-taskCount"> Count : {Task.length}</h4>
       {Task.map((task, i) => (
         <div key={task.id} className="render-main">
           <div className="render-taskDetails">

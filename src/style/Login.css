@@ -1,120 +1,136 @@
-
-.login-main{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    width: 100wh;
-    background: linear-gradient(to bottom, rgb(249, 249, 249), rgb(246, 246, 247));
+.login-main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100wh;
+  background: linear-gradient(
+    to bottom,
+    rgb(249, 249, 249),
+    rgb(246, 246, 247)
+  );
 }
-.login-logo{
-    display: flex;
-    width: 100%;
-    justify-content: center;
-    font-size: medium;
-    font-weight: 600;
-    gap: 1rem;
+.login-logo {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  font-size: medium;
+  font-weight: 600;
+  gap: 1rem;
 }
-.login-name{
-    font-family: "Monoton", serif;
-    cursor: pointer;
-    
-}
-
-.login-bmain{
-    display: flex;
-    width: 100%;
-    height: 80%;
-    align-items: center;
-    justify-content: center;
+.login-name {
+  font-family: "Monoton", serif;
+  cursor: pointer;
 }
 
-.login-div{
- height: 60%;
- width: 50%;
- display: flex;
- flex-direction: column;
- border-left:1px solid black ;
-
+.login-bmain {
+  display: flex;
+  width: 100%;
+  height: 80%;
+  align-items: center;
+  justify-content: center;
 }
 
-.login-tagline{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    /* justify-content: center; */
-    width: 50%;
-}
-.login-tagLineText{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    font-size: 3rem;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-}
-.login-tagLineText p{
-    color: rgb(6, 6, 217);
-    margin:0rem 0.8rem;
-    
+.login-div {
+  height: 60%;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid black;
 }
 
-.userInput-div,.passwordInput-div{
-    display: flex;
-    flex-direction: column;
-    margin: 1em;
-    font-weight: 600;
-    gap: 0.5em;
-   
+.login-tagline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* justify-content: center; */
+  width: 50%;
 }
-.password-input,.username-input{
-    width: 30%;
-    height: 2rem;
-    border-radius: 0.5rem;
-    border:1px solid rgb(214, 213, 213);
-    background: transparent;
-    font-weight: 500;
-    padding: 0.4rem;
+.login-tagLineText {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 3rem;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
-.loginBtn-div{
-    display: flex;
-    width: 50%;
-    margin: 1rem;
-    gap: 2rem;
-    align-items: center;
+.login-tagLineText p {
+  color: rgb(6, 6, 217);
+  margin: 0rem 0.8rem;
 }
-.loginBtn{
-    border: transparent;
-    padding: 1rem;
-    width: fit-content;
-    font-weight: 600;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
+.passwordInput-lableDiv {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.userInput-div,
+.passwordInput-div {
+  display: flex;
+  flex-direction: column;
+  margin: 1em;
+  font-weight: 600;
+  gap: 0.5em;
+}
+.password-input,
+.username-input {
+  width: 30%;
+  height: 2rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgb(214, 213, 213);
+  background: transparent;
+  font-weight: 500;
+  padding: 0.4rem;
+}
+.loginBtn-div {
+  display: flex;
+  width: 50%;
+  margin: 1rem;
+  gap: 2rem;
+  align-items: center;
+}
+.loginBtn {
+  border: transparent;
+  padding: 1rem;
+  width: fit-content;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+}
+
+.baseBtnClass {
+  width: fit-content;
+  font-size: 0.7rem;
+  font-weight: 500;
+  border-radius: 0.3rem;
+  border-color: aliceblue;
+  cursor: pointer;
 }
 @media only screen and (max-width: 1200px) {
- .login-bmain{
+  .login-bmain {
     flex-direction: column;
     gap: 2rem;
- }
- .login-tagline{
+  }
+  .login-tagline {
     font-size: 0.5rem;
- }
- .login-div{
+  }
+  .login-div {
     width: fit-content;
     border: transparent;
-    border-top:2px solid black ;
- }
- .password-input,.username-input{
+    border-top: 2px solid black;
+  }
+  .password-input,
+  .username-input {
     width: 90%;
- }
- .loginBtn-div{
+  }
+  .loginBtn-div {
     width: 100%;
- }
- .login-tagLineText{
+  }
+  .login-tagLineText {
     font-size: 2rem;
     text-align: center;
- }
- .login-tagLineText{
+  }
+  .login-tagLineText {
     flex-direction: column;
- }
+  }
 }

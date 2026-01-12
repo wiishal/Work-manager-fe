@@ -68,7 +68,7 @@
   align-items: center;
   gap: 20px;
   border: 2px solid rgb(125, 125, 125);
-  width: 70%;
+  width: auto;
   padding: 1em;
   color: rgb(163, 163, 163);
   border-radius: 5px;

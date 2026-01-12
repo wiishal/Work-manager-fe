@@ -16,9 +16,16 @@ export async function addSubTask(detail, taskId) {
   return res.data;
 }
 
+export async function deleteSubTask(id) {
+  const res = await axiosInstance.delete(`${url}/subtask/deleteSubTask/${id}`);
+  
+  return res.data
+}
+
 export async function subTaskAssistance(taskDetails) {
   const res = await axiosInstance.post(`${url}/subtask/assistance`, {
     taskDetails,
   });
   return res.data.subtasks;
 }
+

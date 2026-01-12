@@ -2,12 +2,14 @@ import { useState } from "react";
 import { login } from "../../services/authService";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import ShowError from "../ShowError";
 
 export default function Login({ setLogged, setUserName }) {
   const [user, setUser] = useState({ username: "", password: "" });
   const { setUser: setLogin } = useAuth();
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState(null);
+  const [isShowPass, setIsShowPass] = useState(false);
   const navigate = useNavigate();
 
   function setUserDetails(e, field) {
@@ -61,7 +63,7 @@ export default function Login({ setLogged, setUserName }) {
         </div>
 
         <div className="login-div">
-          {error && <div>{error}</div>}
+          {error && <ShowError error={error} closeErrorPopUp={setError} />}
           <div className="userInput-div">
             <label className="username-lable" htmlFor="username">
               User Name
@@ -76,15 +78,23 @@ export default function Login({ setLogged, setUserName }) {
           </div>
 
           <div className="passwordInput-div">
-            <label className="password-lable" htmlFor="password">
-              Password
-            </label>
+            <div className="passwordInput-lableDiv">
+              <label className="password-lable" htmlFor="password">
+                Password
+              </label>
+              <button
+                className="baseBtnClass"
+                onClick={() => setIsShowPass(prev => !prev)}
+              >
+                  {isShowPass ? "Hide": "See"}
+              </button>
+            </div>
             <input
               onChange={(e) => {
                 setUserDetails(e, "password");
               }}
               className="password-input"
-              type="text"
+              type={isShowPass ? "text": "password"}
             />
           </div>
 

@@ -41,7 +41,7 @@ function Today() {
           </div>
         </div>
 
-        <div style={{ overflowY: "scroll", width: "70%" }}>
+        <div style={{ overflowY: "scroll" }}>
           <RenderTask
             render={render}
             addTask={addTask}
@@ -54,13 +54,13 @@ function Today() {
 
       {addTask === true ? <AddTask setRender={setRender} /> : null}
 
-      {editTaskDiv !== null ? (
+      {editTaskDiv && (
         <EditTask
           editTaskDiv={editTaskDiv}
           setRender={setRender}
           seteditTaskDiv={seteditTaskDiv}
         />
-      ) : null}
+      )}
     </div>
   );
 }

@@ -1,12 +1,18 @@
 import { useState, useEffect } from "react";
 import ShowError from "./ShowError";
-import { addExpense } from "../services/expensesService";
+import {
+  addExpense,
+  calculateSpendAssistance,
+} from "../services/expensesService";
 function ExpensesCard({ item, fetchExpenses }) {
   const [spends, setSpends] = useState([]);
   const [spendInput, setSpendInput] = useState("");
-  const [totolExpense, setTotalExpense] = useState();
+  const [totolExpense, setTotalExpense] = useState(null);
   const [error, setError] = useState(null);
-  const [processing, setProcessing] = useState(false);
+  const [processing, setProcessing] = useState({
+    addTaskProcessing: false,
+    calculateSpentProcessing: false,
+  });
 
   async function addSpends() {
     const value = spendInput.trim("");
@@ -16,17 +22,34 @@ function ExpensesCard({ item, fetchExpenses }) {
     }
 
     try {
-      setProcessing(true);
+      setProcessing((prev) => ({ ...prev, addTaskProcessing: true }));
       setError(null);
       const res = await addExpense(value, item.id);
       fetchExpenses();
     } catch (error) {
       setError("error while adding entry");
     } finally {
-      setProcessing(false);
+      setProcessing((prev) => ({ ...prev, addTaskProcessing: true }));
       setSpendInput("");
     }
   }
+
+  const calculateExpenseAssistance = async () => {
+    try {
+      setProcessing((prev) => ({ ...prev, calculateSpentProcessing: true }));
+
+      const res = await calculateSpendAssistance(spends);
+      console.log(res.result);
+      setTotalExpense(res.result);
+      setProcessing((prev) => ({ ...prev, calculateSpentProcessing: true }));
+    } catch (error) {
+      setError("error while assist");
+      console.log(error, "expence card");
+    } finally {
+      setProcessing((prev) => ({ ...prev, calculateSpentProcessing: false }));
+    }
+  };
+
   useEffect(() => {
     setSpends(item.expenses);
   }, [item.expenses]);
@@ -41,9 +64,15 @@ function ExpensesCard({ item, fetchExpenses }) {
     <div key={item.id} className="expenses-card">
       <div className="expensesCard-titleDiv">
         <p className="expensesCard-title">{item.createdAt.split("T")[0]}</p>
-        <button className="expenses-Calculatebtn" onClick={() => {}}>
-          Calculate
-        </button>
+        <div className="expense-calculateSpendDiv">
+          {processing.calculateSpentProcessing && <div className="spinner"></div>}
+          <button
+            className="expenses-Calculatebtn"
+            onClick={calculateExpenseAssistance}
+          >
+            Calculate
+          </button>
+        </div>
       </div>
 
       <div className="expenses-cardContent">
@@ -55,8 +84,12 @@ function ExpensesCard({ item, fetchExpenses }) {
           spends.map((item) => <div>{item.details}</div>)}
       </div>
       {error && <ShowError error={error} closeErrorPopUp={setError} />}
-      {processing && <div className="spinner" />}
-
+      {processing.addTaskProcessing && <div className="spinner" />}
+      {totolExpense && (
+        <div className="expense-totalexpenseResultDiv">
+          Total : {totolExpense}
+        </div>
+      )}
       <div className="expenses-cardInputs">
         <input
           onKeyDown={handleKeyEvent}
@@ -72,7 +105,6 @@ function ExpensesCard({ item, fetchExpenses }) {
           add
         </button>
       </div>
-      <div className="expenses-totalExpenseDiv">{totolExpense}</div>
     </div>
   );
 }

@@ -40,6 +40,7 @@ function EditTask({ setRender, editTaskDiv, seteditTaskDiv }) {
   }
 
   useEffect(() => {
+    console.log("editTaskComp! effect trigg");
     fetchtask(editTaskDiv);
   }, [editTaskDiv]);
 
@@ -182,7 +183,11 @@ function EditTask({ setRender, editTaskDiv, seteditTaskDiv }) {
           Cancel
         </button>
       </div>
-      <AddSubTask Task={Task} editTaskDiv={editTaskDiv} fetchtask={fetchtask} />
+      <AddSubTask
+        TaskId={Task.id}
+        taskTitle={Task.title}
+        taskDescription={Task.taskDescription}
+      />
     </div>
   );
 }

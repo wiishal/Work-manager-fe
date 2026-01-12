@@ -2,7 +2,7 @@
   display: flex;
   width: 40%;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1rem;
   padding: 1rem;
   border: 1px solid black;
   border-radius: 1em;
@@ -34,7 +34,7 @@ label {
   margin: 0.5em;
   width: 15rem;
   height: fit-content;
-  font-weight: 600;
+  /* font-weight: 600; */
   border-color: transparent;
   border-bottom-color: rgb(35, 41, 221);
 }
@@ -43,7 +43,7 @@ label {
   margin: 0.5em;
   width: 15rem;
   height: fit-content;
-  font-weight: 600;
+  /* font-weight: 600; */
   border: 1px solid black;
   border-color: transparent;
   border-bottom-color: rgb(6, 6, 6);
@@ -91,12 +91,23 @@ label {
         type="text"
       /> */
 
+.addsubTask{
+  margin: 0.5rem;
+}      
+.subtaskRenderDiv {
+  overflow-x: scroll;
+  max-height: 200px;
+}
 .subtaskRender {
+  height: auto;
   display: flex;
   flex-direction: row;
   align-items: center;
-  height: auto;
-  gap: 5px;
+  color: rgb(56, 55, 55);
+  font-size: 0.8rem;
+
+  gap: 1px;
+  margin: 0.3rem;
 }
 .baseBtnClass {
   width: fit-content;
@@ -107,7 +118,24 @@ label {
   border-color: aliceblue;
   cursor: pointer;
 }
+.subtaskSuggestionRenderDiv {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border-top: 1px solid rgb(103, 99, 99);
+  margin-top: 0.5rem;
+}
+.subtaskSuggestionRenderItem {
+  color: rgb(90, 87, 87);
+  cursor: pointer;
+  font-size: small;
+    transition: font-size 0.2s ease, color 0.2s ease, transform 0.2s ease-out;
 
+}
+.subtaskSuggestionRenderItem:hover{
+  color: black;
+  font-size: 0.8rem;
+}
 .baseInputClass {
   border: 1px solid #cfcfcf;
   border-radius: 5px;

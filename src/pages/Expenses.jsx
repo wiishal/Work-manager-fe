@@ -10,15 +10,16 @@ function Expenses() {
   const [loading, setLoading] = useState(false);
   const fetchExpenses = useCallback(async () => {
     try {
+      setLoading(true);
       const res = await fetchExpensesCards();
       setCards(res);
-      setLoading(false);
     } catch (error) {
       alert("error!");
+    } finally {
+      setLoading(false);
     }
   }, []);
   useEffect(() => {
-    setLoading(true);
     fetchExpenses();
   }, []);
   return (

@@ -20,3 +20,10 @@ export async function addExpense(spend, expenseCardId) {
   });
   return res.data;
 }
+
+export async function calculateSpendAssistance(spends) {
+  const res = await axiosInstance.post(`${url}/expenses/calculateSpendAssistance`, {
+    spends
+  });
+  return res.data.aiResponse;
+}

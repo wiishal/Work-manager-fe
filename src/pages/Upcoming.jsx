@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useCallback, useState } from "react";
 import "../style/Upcoming.css";
 import { getAllTasks } from "../services/taskService";
 import { useFormatDate } from "../hooks/useFormateDate";
-// useFormatDate
+
 function Upcoming() {
   const { formatDate } = useFormatDate();
 
@@ -11,6 +11,26 @@ function Upcoming() {
     other: [],
   });
 
+  const groupTasks = useCallback(
+    (tasks) => {
+      const grouped = {
+        today: [],
+        other: [],
+      };
+
+      tasks.forEach((task) => {
+        if (task.date === formatDate) {
+          grouped.today.push(task);
+        } else {
+          grouped.other.push(task);
+        }
+      });
+
+      setGroupedTasks(grouped);
+    },
+    [formatDate] // ✅ dependency
+  );
+
   async function fetchTask() {
     try {
       const response = await getAllTasks();
@@ -18,25 +38,6 @@ function Upcoming() {
     } catch (error) {
       console.error(error);
     }
-  }
-
-  function groupTasks(tasks) {
-    const todayDate = formatDate;
-
-    const grouped = {
-      today: [],
-      other: [],
-    };
-
-    tasks.forEach((task) => {
-      if (task.date === todayDate) {
-        grouped.today.push(task);
-      } else {
-        grouped.other.push(task);
-      }
-    });
-
-    setGroupedTasks(grouped);
   }
 
   useEffect(() => {
@@ -71,7 +72,9 @@ function Upcoming() {
     </div>
   );
 }
-const TaskTemplate = React.memo((task )=>{
+
+const TaskTemplate = ({ task }) => {
+  console.log(task, "task tem");
   return (
     <div className="Upcoming-task">
       <img
@@ -80,12 +83,11 @@ const TaskTemplate = React.memo((task )=>{
         width={13}
         height={13}
       />
-
       <div className="Upcoming-task-subdiv">
         <p
           className="Upcoming-task-title"
           style={{
-            color: task.complete ? "rgb(217, 217, 217)" : "inherit",
+            color: task.complete ? "" : "inherit",
           }}
         >
           {task.title}
@@ -95,6 +97,6 @@ const TaskTemplate = React.memo((task )=>{
       </div>
     </div>
   );
-},[])
+};
 
 export default Upcoming;
