@@ -3,6 +3,7 @@ import { signUp } from "../../services/authService";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import ShowError from "../ShowError";
+import { set } from "zod";
 
 export default function Signup() {
   const [user, setUser] = useState({ username: "", password: "" });
@@ -23,10 +24,11 @@ export default function Signup() {
   async function handleSignUpClick() {
     const isInputEmpty = checkInput(user);
     if (isInputEmpty) {
-      alert("Check inputs");
+      setError("All fields are required!");
       return;
     }
     setIsProcessing(true);
+    setError(null);
     try {
       const response = await signUp(user);
       const token = response.token;
@@ -34,8 +36,11 @@ export default function Signup() {
       LoginUser(response.user);
       navigate("/");
     } catch (error) {
-      setError("Internal Error occured!");
-      setIsProcessing(false);
+      if(error.code){
+        setError(error.message);
+      }else{
+        setError("Internal Server Error!");
+      } 
     } finally {
       setIsProcessing(false);
     }

@@ -1,10 +1,14 @@
 import { useState, useEffect } from "react";
 import {
   getAllTasks,
-  toggleStatus,
   deleteTask,
 } from "../../services/taskService";
-import { checkBoxChecked, checkBoxEmpty } from "../../assets/assets";
+import ShowError from "../ShowError";
+import { checkBoxChecked,checkBoxEmpty } from "../../assets/assets";
+import { toggleStatus } from "../../services/taskService";
+
+
+
 export default function RenderTask({
   render,
   setAddTask,
@@ -12,66 +16,93 @@ export default function RenderTask({
   addTask,
   setRender,
 }) {
-  const [Task, setTask] = useState([]);
+  const [tasks, setTasks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   useEffect(() => {
     fetchTasks();
   }, [render]);
 
   const fetchTasks = async () => {
-    const alltasks = await getAllTasks();
+    setIsLoading(true);
+    setError(null);
 
-    if (alltasks.tasks) {
-      setTask(alltasks.tasks);
+    try {
+      const res = await getAllTasks();
+      setTasks(res.tasks);
+    } catch (err) {
+      if (err?.isAppError) {
+        setError(err.message);
+      } else {
+        setError("Failed to fetch tasks");
+      }
+      setTasks([]);
+    } finally {
       setIsLoading(false);
-      return;
     }
-    setTask([]);
-    setIsLoading(false);
   };
 
-  async function deletetask(id) {
-    console.log(id, "delete task req");
-    if (!id) return false;
-    const res = await deleteTask(id);
-    if (!res) {
-      alert("failed to delete task");
-      return;
+  async function handleDeleteTask(id) {
+    if (!id) return;
+
+    try {
+      await deleteTask(id);
+      setRender((prev) => !prev); 
+    } catch (err) {
+      if (err?.isAppError) {
+        setError(err.message);
+      } else {
+        setError("Failed to delete task");
+      }
     }
-    alert("task deleted!!");
-    setRender((prev) => !prev);
   }
-  function handleEditTask(Id) {
+
+  function handleEditTask(id) {
     seteditTaskDiv(null);
-    seteditTaskDiv(Id);
-    if (addTask) {
-      setAddTask(false);
-    }
+    seteditTaskDiv(id);
+    if (addTask) setAddTask(false);
   }
 
   if (isLoading) return <div className="spinner" />;
+
   return (
     <>
-      {Task.map((task, i) => (
+      {error && <ShowError error={error} closeErrorPopUp={setError} />}
+
+      {tasks.length === 0 && !error && (
+        <p className="empty-text">No tasks found</p>
+      )}
+
+      {tasks.map((task) => (
         <div key={task.id} className="render-main">
           <div className="render-taskDetails">
-            <BoxImage i={i} setTask={setTask} task={task} />
+            <BoxImage
+              task={task}
+              setTasks={setTasks}
+              setError={setError}
+            />
             <p>{task.title}</p>
           </div>
 
           <div className="render-taskdescription">
             <p>{task.taskDescription}</p>
           </div>
+
           <div className="render-taskstatus">
             <img
               src="https://res.cloudinary.com/ddg85vpnk/image/upload/v1739965624/calendar_s9wgbg.png"
               width={15}
-              alt="calenderpng"
+              alt="calendar"
             />
             <p>{task.date}</p>
           </div>
+
           <div className="render-Btn">
-            <button onClick={() => deletetask(task.id)} className="render-btn">
+            <button
+              onClick={() => handleDeleteTask(task.id)}
+              className="render-btn"
+            >
               delete
             </button>
             <button
@@ -87,34 +118,43 @@ export default function RenderTask({
   );
 }
 
-function BoxImage({ task, setTask, i }) {
+function BoxImage({ task, setTasks, setError }) {
   const [processing, setProcessing] = useState(false);
-  async function checkTask(id, i) {
+
+  async function handleToggleStatus() {
     setProcessing(true);
-    if (!id) return;
+
     try {
-      const res = await toggleStatus(id);
-      setTask((prev) =>
+      const res = await toggleStatus(task.id);
+
+      setTasks((prev) =>
         prev.map((item) =>
-          item.id == task.id ? { ...item, complete: res.data.taskStatus } : item
+          item.id === task.id
+            ? { ...item, complete: res.data.taskStatus }
+            : item
         )
       );
-      setProcessing(false);
-    } catch (error) {
-      alert("error");
+    } catch (err) {
+      if (err.isAppError) {
+        setError(err.message);
+      } else {
+        setError("Failed to update task status");
+      }
     } finally {
       setProcessing(false);
     }
   }
-  if (processing) return <div className="spinner"></div>;
+
+  if (processing) return <div className="spinner small" />;
+
   return (
     <img
       style={{ cursor: "pointer" }}
-      onClick={() => checkTask(task.id, i)}
-      src={task.complete ? `${checkBoxChecked}` : `${checkBoxEmpty}`}
+      onClick={handleToggleStatus}
+      src={task.complete ? checkBoxChecked : checkBoxEmpty}
       width={15}
       height={15}
-      alt="checkboxpng"
+      alt="checkbox"
     />
   );
 }

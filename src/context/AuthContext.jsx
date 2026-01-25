@@ -12,7 +12,6 @@ export const AuthProvider = ({ children }) => {
       if (!token) {
         setUser(null);
         setLoading(false);
-
         return;
       }
       try {
@@ -25,7 +24,6 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
       }
     }
-    console.log("in auth");
     validate();
   }, []);
   return (

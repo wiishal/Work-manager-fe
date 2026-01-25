@@ -5,7 +5,7 @@ import Nav from "./componant/Nav";
 import Today from "./pages/Today";
 import Upcoming from "./pages/Upcoming";
 import Expenses from "./pages/Expenses.jsx";
-import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import {  Route, Routes, Navigate } from "react-router-dom";
 import TagDetails from "./componant/tags/TagDetails.jsx";
 import ListDetails from "./componant/list/ListDetails.jsx";
 

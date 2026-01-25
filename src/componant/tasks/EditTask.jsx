@@ -2,11 +2,17 @@ import { useEffect, useState } from "react";
 import { getTask, updateTask } from "../../services/taskService";
 import { useDate } from "../../hooks/useDate";
 import AddSubTask from "../AddSubTask";
+import ShowError from "../ShowError";
 
 function EditTask({ setRender, editTaskDiv, seteditTaskDiv }) {
   const today = useDate();
   const [processing, setProcessing] = useState(false);
-  const [Task, setTask] = useState({
+  const [edit, setEdit] = useState({ title: false, des: false });
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // task state definition
+  const [task, setTask] = useState({
     id: null,
     userId: null,
     complete: false,
@@ -17,30 +23,25 @@ function EditTask({ setRender, editTaskDiv, seteditTaskDiv }) {
     tags: [],
     Subtask: [],
   });
-  const [edit, setEdit] = useState({ title: false, des: false });
-  const [isLoading, setIsLoading] = useState(true);
 
   async function fetchtask(editTaskDiv) {
-    const res = await getTask(editTaskDiv);
-    if (res) {
-      setTask({
-        id: res.task.id,
-        userId: res.task.UserId,
-        complete: res.task.complete,
-        title: res.task.title,
-        taskDescription: res.task.taskDescription,
-        date: res.task.date,
-        list: res.task.list,
-        tags: res.task.tags,
-        Subtask: res.task.Subtask,
-      });
+    setIsLoading(true);
+    try {
+      const task = await getTask(editTaskDiv);
+      setTask(task);
       setIsLoading(false);
-      return;
+    } catch {
+      if (error.isAppError) {
+        setError(error);
+      } else {
+        setError(new Error("An unexpected error occurred"));
+      }
+    } finally {
+      setIsLoading(false);
     }
   }
 
   useEffect(() => {
-    console.log("editTaskComp! effect trigg");
     fetchtask(editTaskDiv);
   }, [editTaskDiv]);
 
@@ -54,7 +55,7 @@ function EditTask({ setRender, editTaskDiv, seteditTaskDiv }) {
 
   async function update() {
     setProcessing(true);
-    const data = { title: Task.title, date: Task.date };
+    const data = { title: task.title, date: task.date };
     const isInputEmpty = checkInputs(data);
     if (isInputEmpty) {
       alert("Check title and Date");
@@ -63,11 +64,11 @@ function EditTask({ setRender, editTaskDiv, seteditTaskDiv }) {
     try {
       const res = await updateTask({
         ...data,
-        id: Task.id,
-        complete: Task.complete,
-        taskDescription: Task.taskDescription,
-        tags: Task.list,
-        list: Task.tags,
+        id: task.id,
+        complete: task.complete,
+        taskDescription: task.taskDescription,
+        tags: task.tags,
+        list: task.list,
       });
       if (res) {
         alert("task updated successfully");
@@ -89,6 +90,7 @@ function EditTask({ setRender, editTaskDiv, seteditTaskDiv }) {
   if (isLoading) return <div className="loading-div">Loading...</div>;
   return (
     <div className="edit-main">
+      {error && <ShowError error={error} closeErrorPopUp={setError} />}
       <div className="edit-title">
         <div className="edit-titleEditBtn">
           <label htmlFor="">task</label>
@@ -103,10 +105,10 @@ function EditTask({ setRender, editTaskDiv, seteditTaskDiv }) {
           <input
             className="edit-titleInput"
             onChange={(e) => inputHandler(e, "title")}
-            value={Task.title || ""}
+            value={task.title || ""}
           ></input>
         ) : (
-          <p className="edit-titleText">{Task.title || ""}</p>
+          <p className="edit-titleText">{task.title || ""}</p>
         )}
       </div>
       <div className="edit-des">
@@ -123,12 +125,12 @@ function EditTask({ setRender, editTaskDiv, seteditTaskDiv }) {
           <textarea
             className="edit-DesInput"
             style={{ width: "15rem", height: "fit-content" }}
-            value={Task.taskDescription || ""}
+            value={task.taskDescription || ""}
             onChange={(e) => inputHandler(e, "taskDescription")}
             type="text"
           />
         ) : (
-          <p className="edit-DesText">{Task.taskDescription || ""}</p>
+          <p className="edit-DesText">{task.taskDescription || ""}</p>
         )}
       </div>
       <div className="edit-date">
@@ -137,15 +139,15 @@ function EditTask({ setRender, editTaskDiv, seteditTaskDiv }) {
           type="date"
           className="edit-dateInput"
           onChange={(e) => inputHandler(e, "date")}
-          value={Task.date || Date.now()}
+          value={task.date || Date.now()}
         />
       </div>
       <div className="edit-tagList">
         <div className="edit-tag ">
           <label htmlFor="">tags </label>
-          {Task.tags.length > 0 ? (
+          {task.tags.length > 0 ? (
             <div className="edit-tagItem">
-              {Task.tags.map((i, k) => (
+              {task.tags.map((i, k) => (
                 <p key={k}>{i}</p>
               ))}
             </div>
@@ -155,9 +157,9 @@ function EditTask({ setRender, editTaskDiv, seteditTaskDiv }) {
         </div>
         <div className="edit-list">
           <label htmlFor="">List</label>
-          {Task.list.length > 0 ? (
+          {task.list.length > 0 ? (
             <div className="edit-listItem">
-              {Task.list.map((i, k) => (
+              {task.list.map((i, k) => (
                 <p key={k}>{i}</p>
               ))}
             </div>
@@ -166,7 +168,7 @@ function EditTask({ setRender, editTaskDiv, seteditTaskDiv }) {
           )}
         </div>
       </div>
-      <div>
+      <div className="edit-saveBtnDiv">
         {processing ? (
           <div className="spinner" />
         ) : (
@@ -184,9 +186,9 @@ function EditTask({ setRender, editTaskDiv, seteditTaskDiv }) {
         </button>
       </div>
       <AddSubTask
-        TaskId={Task.id}
-        taskTitle={Task.title}
-        taskDescription={Task.taskDescription}
+        TaskId={task.id}
+        taskTitle={task.title}
+        taskDescription={task.taskDescription}
       />
     </div>
   );

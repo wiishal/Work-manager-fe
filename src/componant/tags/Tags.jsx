@@ -2,23 +2,30 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { addtag } from "../../services/userStrService";
 import { plusPng } from "../../assets/assets";
+import { getUserTags } from "../../services/userStrService";
 
-function Tags({ Tags }) {
-  const [tags, setTags] = useState(Tags);
+function Tags() {
+  const [tags, setTags] = useState([]);
   const [isTagInputDiv, setIsTagInputDiv] = useState(false);
   const [tagInputValue, setTagInputValue] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [refetchTag, setRefetchTag] = useState(false);
 
-  useEffect(() => {
-    setTags(Tags || []);
-  }, [Tags]);
 
-  function addTag() {
-    const trimmedValue = tagInputValue.trim();
-    if (trimmedValue !== "") {
-      setTags((prevTags) => [...prevTags, trimmedValue]);
-      setTagInputValue("");
-      saveTag(trimmedValue);
-      setIsTagInputDiv(false);
+  async function getTages() {
+    setIsLoading(true);
+    try {
+      const tags = await getUserTags();
+      console.log("tags:", tags);
+      setTags(tags);
+    } catch (error) {
+      if(error.isAppError){
+        alert(`Error: ${error.message} (Code: ${error.code})`);
+      }else{
+        alert("An unexpected error occurred.");
+      }
+    }finally{
+      setIsLoading(false);
     }
   }
 
@@ -27,14 +34,28 @@ function Tags({ Tags }) {
       alert("enter something");
       return;
     }
-    const responce = await addtag(tagInputValue);
-    if (!responce) {
-      alert("error whle saving");
-      return;
+    try {
+      await addtag(tagInputValue);
+    } catch (err) {
+      if(err.isAppError){
+        alert(`Error: ${err.message} (Code: ${err.code})`);
+      }else{
+        alert("An unexpected error occurred.");
+      }
+    }finally{
+      setTagInputValue("");
+      setRefetchTag((prev)=>!prev);
     }
-    alert("tag added", tagInputValue);
   }
 
+
+    useEffect(() => {
+    getTages();
+  }, [refetchTag]);
+
+if(isLoading){
+  return <div>Loading...</div>
+}
   return (
     <div>
       <div className="nav-tagTitle">
@@ -42,8 +63,7 @@ function Tags({ Tags }) {
         <img
           style={{ cursor: "pointer" }}
           onClick={() => {
-            console.log("h");
-            setIsTagInputDiv((prev) => !prev);
+            setIsTagInputDiv(true);
           }}
           src={plusPng}
           alt=""
@@ -70,7 +90,12 @@ function Tags({ Tags }) {
             className="tag-input"
             type="text"
           />
-          <button className="baseBtnClass" onClick={saveTag}>save</button>
+          <button className="baseBtnClass" onClick={saveTag}>
+            save
+          </button>
+          <button className="baseBtnClass" onClick={() => setIsTagInputDiv(false)}>
+            cancel
+          </button>
         </div>
       )}
     </div>

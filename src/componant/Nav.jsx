@@ -32,9 +32,9 @@ const [userStr, setUserStr] = useState({
   useEffect(() => {
     
     async function getStr() {
-      const Str = await getUserTaskStr()
-      if(userStr){
-        setUserStr(Str.userStr);
+      const res = await getUserTaskStr()
+      if(res.userStr){
+        setUserStr(res.userStr);
         return
       }
       setUserStr({
@@ -118,7 +118,7 @@ const [userStr, setUserStr] = useState({
           ))}
         </ul>
         <div className="nav-tags">
-          <Tags Tags={userStr.tags} />
+          <Tags  />
         </div>
       </nav>
     </div>

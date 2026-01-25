@@ -1,20 +1,14 @@
 const url = import.meta.env.VITE_API_URL;
-import axios from "axios";
 import axiosInstance from "../lib/axiosInstance";
+import { AppError } from "../lib/errors.ts/AppError";
 
 export async function getAllTasks() {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    return false;
-  }
+  
   try {
     const res = await axiosInstance.get(`${url}/task/allTasks`);
-    if (res.status !== 200) {
-      return false;
-    }
     return res.data;
   } catch (error) {
-    console.log("error while getting tasks", error);
+    
     return false;
   }
 }
@@ -22,13 +16,15 @@ export async function getAllTasks() {
 export async function getTask(id) {
   try {
     const res = await axiosInstance.get(`${url}/task/getTask/${id}`);
-    if (res.status !== 200) {
-      return false;
-    }
-    return res.data;
+    
+    return res.data.task;
   } catch (error) {
-    console.log("error while getting task", error);
-    return false;
+    if(error.response){
+      const {code,message} = error.response.data;
+      throw new AppError(code,message);
+    }else{
+      throw new AppError("NETWORK_ERROR","Network error occurred");
+    }
   }
 }
 

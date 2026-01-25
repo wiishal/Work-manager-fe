@@ -54,6 +54,11 @@ label {
   border-color: aliceblue;
   font-weight: 500;
 }
+.edit-saveBtnDiv{
+  display: flex;
+  flex-direction: row;
+  
+}
 .edit-list,
 .edit-tag {
   display: flex;

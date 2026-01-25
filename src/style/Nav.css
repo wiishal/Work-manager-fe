@@ -112,12 +112,12 @@ a{
     border: 1px solid black;
     border-color: rgb(176, 174, 174);
     border-radius: 5px;
-    width:fit-content ;
+    width:auto;
 }
 .nav-tagInputDiv{
-    display: flex;
-    gap: 1em;
+    display: flex-wrap;
     width: fit-content;
+    align-items: center;
 }
 
 .baseBtnClass {

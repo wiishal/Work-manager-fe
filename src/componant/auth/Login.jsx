@@ -3,6 +3,7 @@ import { login } from "../../services/authService";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import ShowError from "../ShowError";
+import { set } from "zod";
 
 export default function Login({ setLogged, setUserName }) {
   const [user, setUser] = useState({ username: "", password: "" });
@@ -22,21 +23,25 @@ export default function Login({ setLogged, setUserName }) {
   async function handleLoginClick() {
     const isInputEmpty = checkInput(user);
     if (isInputEmpty) {
-      alert("Check inputs");
+      setError("All fields are required!");
       return;
     }
 
     setIsProcessing(true);
+    setError(null);
+    let response;
     try {
-      const response = await login(user);
-
+      response = await login(user);
       const token = response.token;
       localStorage.setItem("token", token);
       setLogin(response.user);
       navigate("/");
     } catch (error) {
-      setError("Internal Server Error!");
-      setIsProcessing(false);
+      if (error.isAppError) {
+        setError(error.message);
+      } else {
+        setError("Internal Server Error!");
+      }
     } finally {
       setIsProcessing(false);
     }
@@ -82,9 +87,9 @@ export default function Login({ setLogged, setUserName }) {
               </label>
               <button
                 className="baseBtnClass"
-                onClick={() => setIsShowPass(prev => !prev)}
+                onClick={() => setIsShowPass((prev) => !prev)}
               >
-                  {isShowPass ? "Hide": "See"}
+                {isShowPass ? "Hide" : "See"}
               </button>
             </div>
             <input
@@ -92,7 +97,7 @@ export default function Login({ setLogged, setUserName }) {
                 setUserDetails(e, "password");
               }}
               className="password-input"
-              type={isShowPass ? "text": "password"}
+              type={isShowPass ? "text" : "password"}
             />
           </div>
 

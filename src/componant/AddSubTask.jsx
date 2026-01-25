@@ -27,12 +27,13 @@ function AddSubTask({ TaskId, taskTitle, taskDescription }) {
 
     try {
       const data = await subTaskAssistance(taskDetails);
-      console.log(data);
       setSubTaskSuggestions(data);
-      console.log(data, ": suggestions");
     } catch (error) {
-      setSubTaskSuggestions([]);
-      setError("error while assistance! ");
+      if (error.isAppError) {
+        setError(error.message);
+      } else {
+        setError("error while assistance! ");
+      }
     } finally {
       setIsBtnDisable(false);
     }
@@ -43,11 +44,13 @@ function AddSubTask({ TaskId, taskTitle, taskDescription }) {
 
     try {
       const res = await getSubTasks(TaskId);
-      console.log(res);
       setSubTasks(res.subtasks);
     } catch (error) {
-      setError("error while getting! ");
-      alert("error");
+      if (error.isAppError) {
+        setError(error.message);
+      } else {
+        setError("error while assistance! ");
+      }
     } finally {
       setProcessing(false);
     }
@@ -62,8 +65,11 @@ function AddSubTask({ TaskId, taskTitle, taskDescription }) {
       const res = await addSubTask(subtaskInput, TaskId);
       setSubTasks((prev) => [...prev, res.subtask]);
     } catch (error) {
-      console.log(error);
-      setError("something went Wrong!");
+      if (error.isAppError) {
+        setError(error.message);
+      } else {
+        setError("error while assistance! ");
+      }
     } finally {
       setSubTaskInput("");
     }
@@ -74,19 +80,20 @@ function AddSubTask({ TaskId, taskTitle, taskDescription }) {
       setError("Empty input");
       return;
     }
-    console.log(subSuggestedtaskInput, "id: ", i);
     try {
       const res = await addSubTask(subSuggestedtaskInput, TaskId);
       const filterSuggestions = subTaskSuggestions.filter(
-        (_, index) => index != i
+        (_, index) => index != i,
       );
 
       setSubTaskSuggestions(filterSuggestions);
       setSubTasks((prev) => [...prev, res.subtask]);
     } catch (error) {
-      console.log(error);
-
-      setError("something went Wrong!");
+      if (error.isAppError) {
+        setError(error.message);
+      } else {
+        setError("error while assistance! ");
+      }
     } finally {
       setSubTaskInput("");
     }
@@ -181,7 +188,6 @@ function RenderSubTask({ subTask, i, subTasks, setSubTasks }) {
       setProcessing(false);
     } catch (error) {
       setError("something went Wrong! while deleting subtask");
-      console.log("error", error);
     } finally {
       setProcessing(false);
     }
@@ -217,7 +223,7 @@ function BoxImage({ subTask, setSubTasks }) {
         return prev.map((subtask) =>
           subtask.id == subtaskId
             ? { ...subtask, complete: res.completeStatus }
-            : subtask
+            : subtask,
         );
       });
     } catch (error) {
