@@ -1,6 +1,7 @@
 import Landing from "./Landing";
 import App from "./App";
 import { useAuth } from "./context/AuthContext";
+
 const AuthGate = () => {
   const { user, loading } = useAuth();
 

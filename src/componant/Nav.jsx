@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 import { getUserTaskStr } from "../services/userStrService";
 
 function Nav({ currUser }) {
-  const { today, upcoming } = useState(0);
   const [userStr, setUserStr] = useState({
     list: [],
     tags: [],
