@@ -9,21 +9,20 @@ function TagDetails() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setIsLoading(true);
     fetch();
   }, [tag]);
 
   async function fetch() {
     if (!tag) return;
-    const data = await getTagTask(tag);
-    if (!data) {
+    try {
+      const data = await getTagTask(tag);
+      setTask(data.tasks);
+    } catch (error) {
       alert("failed to fetch tasks");
       setTask([]);
+    } finally {
       setIsLoading(false);
-      return;
     }
-    setTask(data.tasks);
-    setIsLoading(false);
   }
   if (isLoading) return <div className="loading-div">loading...</div>;
   return (

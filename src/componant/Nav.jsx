@@ -1,19 +1,17 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import "../style/Nav.css";
 import "../style/selectTags.css";
 import Tags from "./tags/Tags";
 import { Link } from "react-router-dom";
 import { getUserTaskStr } from "../services/userStrService";
 
-
-function Nav({ currUser  }) {
+function Nav({ currUser }) {
   const { today, upcoming } = useState(0);
-const [userStr, setUserStr] = useState({
-  list: [],
-  tags: [],
-});
-  const [lists, setLists] = useState(
-    [
+  const [userStr, setUserStr] = useState({
+    list: [],
+    tags: [],
+  });
+  const [lists, setLists] = useState([
     {
       list: "personal",
       style: { backgroundColor: "red" },
@@ -29,20 +27,27 @@ const [userStr, setUserStr] = useState({
     borderRadius: "5px",
     backgroundColor: "red",
   });
-  useEffect(() => {
-    
-    async function getStr() {
-      const res = await getUserTaskStr()
-      if(res.userStr){
-        setUserStr(res.userStr);
-        return
+
+  async function getStr() {
+    try {
+      const res = await getUserTaskStr();
+      setUserStr(res.userStr);
+    } catch (error) {
+      if (error.isAppError) {
+        console.error(
+          `AppError - Code: ${error.code}, Message: ${error.message}`,
+        );
+      } else {
+        console.error("Unexpected Error:", error);
       }
       setUserStr({
-        list:[],
-        tags:[]
-      })
+        list: [],
+        tags: [],
+      });
     }
-    getStr()
+  }
+  useEffect(() => {
+    getStr();
   }, []);
   return (
     <div className="Nav-div">
@@ -89,7 +94,7 @@ const [userStr, setUserStr] = useState({
               </div>
             </div>
           </li>
-          
+
           <li>
             <div className="icon-div">
               <img
@@ -118,11 +123,11 @@ const [userStr, setUserStr] = useState({
           ))}
         </ul>
         <div className="nav-tags">
-          <Tags  />
+          <Tags />
         </div>
       </nav>
     </div>
   );
-} 
+}
 
 export default Nav;
