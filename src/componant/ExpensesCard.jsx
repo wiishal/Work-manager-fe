@@ -4,7 +4,9 @@ import {
   addExpense,
   calculateSpendAssistance,
 } from "../services/expensesService";
+
 function ExpensesCard({ item, fetchExpenses }) {
+  
   const [spends, setSpends] = useState([]);
   const [spendInput, setSpendInput] = useState("");
   const [totolExpense, setTotalExpense] = useState(null);
@@ -27,7 +29,11 @@ function ExpensesCard({ item, fetchExpenses }) {
       const res = await addExpense(value, item.id);
       fetchExpenses();
     } catch (error) {
-      setError("error while adding entry");
+      if (error.isAppError) {
+        setError(error.message);
+      } else {
+        setError("Error Adding expenses");
+      }
     } finally {
       setProcessing((prev) => ({ ...prev, addTaskProcessing: false }));
       setSpendInput("");

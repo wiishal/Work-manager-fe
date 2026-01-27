@@ -28,7 +28,7 @@ function Expenses() {
         <h1 className="expenses-mainTitle">Expenses</h1>
         <div className="expenses-TitleBtn">
           <button
-            className="expenses-mainAddbtn"
+            className="baseBtnClass"
             onClick={() => setIsAddCard(true)}
           >
             Add

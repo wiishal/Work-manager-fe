@@ -15,7 +15,6 @@ function AddSubTask({ TaskId, taskTitle, taskDescription }) {
   const [error, setError] = useState(null);
   const [isbtnDisable, setIsBtnDisable] = useState(false);
   const [subTaskSuggestions, setSubTaskSuggestions] = useState([]);
-  console.log(subTasks, "subtasks");
 
   const getAssistanceSubTask = async () => {
     setIsBtnDisable(true);
@@ -109,7 +108,6 @@ function AddSubTask({ TaskId, taskTitle, taskDescription }) {
       <h3>Sub Task</h3>
 
       {error && <ShowError error={error} closeErrorPopUp={setError} />}
-
       <div>
         <input
           className="baseInputClass"
@@ -213,6 +211,8 @@ function RenderSubTask({ subTask, i, subTasks, setSubTasks }) {
     </div>
   );
 }
+
+
 function BoxImage({ subTask, setSubTasks }) {
   const [processing, setProcessing] = useState(false);
   const checkSubTaskfunc = async (subtaskId) => {

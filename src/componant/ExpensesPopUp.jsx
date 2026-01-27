@@ -13,10 +13,15 @@ export default function ExpensesPopup({ setIsAddCard, fetchExpenses }) {
 
     try {
       const res = await addNewCard(title);
-      setTitle("")
       fetchExpenses();
     } catch (error) {
-      setError("error while adding card");
+      if (error.isAppError) {
+        setError(error.message);
+      } else {
+        setError("error while adding card");
+      }
+    } finally {
+      setTitle("");
     }
   };
 
